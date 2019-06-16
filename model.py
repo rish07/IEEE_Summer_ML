@@ -83,3 +83,28 @@ x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
 input_shape = x_train.shape[1:]
+
+
+
+# creating positive and negative pairs
+digit_indices = [np.where(y_train == i)[0] for i in range(num_classes)]
+tr_pairs, tr_y = create_pairs(x_train, digit_indices)
+
+digit_indices = [np.where(y_test == i)[0] for i in range(num_classes)]
+te_pairs, te_y = create_pairs(x_test, digit_indices)
+
+
+#Defining network
+base_network = feature(input_shape)
+
+input_a = Input(shape=input_shape)
+input_b = Input(shape=input_shape)
+
+#Same weights because same network
+processed_a = base_network(input_a)
+processed_b = base_network(input_b)
+
+distance = Lambda(dist,
+                  output_shape=eucl_dist_output_shape)([processed_a, processed_b])
+
+model = Model([input_a, input_b], distance)
