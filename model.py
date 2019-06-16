@@ -18,7 +18,7 @@ from keras.optimizers import RMSprop
 from keras import backend as K
 
 num_classes = 10
-epochs = 50
+epochs = 20
 
 
 def contrastive_loss(y_true, y_pred): #Loss Function
@@ -117,3 +117,12 @@ model.fit([tr_pairs[:, 0], tr_pairs[:, 1]], tr_y,
           batch_size=128,
           epochs=epochs,
           validation_data=([te_pairs[:, 0], te_pairs[:, 1]], te_y))
+
+#Accuracy test
+y_pred = model.predict([tr_pairs[:, 0], tr_pairs[:, 1]])
+tr_acc = compute_accuracy(tr_y, y_pred)
+y_pred = model.predict([te_pairs[:, 0], te_pairs[:, 1]])
+te_acc = compute_accuracy(te_y, y_pred)
+
+print('* Accuracy on training set: %0.2f%%' % (100 * tr_acc))
+print('* Accuracy on test set: %0.2f%%' % (100 * te_acc))
