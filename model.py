@@ -53,3 +53,18 @@ def create_pairs(x, digit_indices): #Creation of +ve and -ve alternative pairs
             labels += [1, 0]
     return np.array(pair), np.array(labels)
 
+
+
+def feature(input_shape): #Feature extraction
+    input = Input(shape=input_shape)
+    x = Flatten()(input)
+    x = Dense(128, activation='relu')(x)
+    x = Dropout(0.1)(x)
+    x = Dense(128, activation='relu')(x)
+    x = Dropout(0.1)(x)
+    x = Dense(128, activation='relu')(x)
+    return Model(input, x)
+
+def compute_accuracy(y_true, y_pred):  #Accuracy 
+    pred = y_pred.ravel() < 0.5
+    return np.mean(pred == y_true)
