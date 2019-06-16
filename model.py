@@ -68,3 +68,18 @@ def feature(input_shape): #Feature extraction
 def compute_accuracy(y_true, y_pred):  #Accuracy 
     pred = y_pred.ravel() < 0.5
     return np.mean(pred == y_true)
+
+def accuracy(y_true, y_pred):
+    return K.mean(K.equal(y_true, K.cast(y_pred < 0.5, y_true.dtype)))
+
+
+
+
+
+#Splitting test and train datasets
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train = x_train.astype('float32')
+x_test = x_test.astype('float32')
+x_train /= 255
+x_test /= 255
+input_shape = x_train.shape[1:]
