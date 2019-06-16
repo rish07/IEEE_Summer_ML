@@ -26,3 +26,10 @@ def contrastive_loss(y_true, y_pred):
     sqaure_pred = K.square(y_pred)
     margin_square = K.square(K.maximum(margin - y_pred, 0))
     return K.mean(y_true * sqaure_pred + (1 - y_true) * margin_square)
+
+
+def dist(vects):
+    x, y = vects
+    sum_square = K.sum(K.square(x - y), axis=1, keepdims=True)
+    return K.sqrt(K.maximum(sum_square, K.epsilon()))
+
