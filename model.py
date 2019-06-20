@@ -6,7 +6,7 @@ Created on Sun Jun 16 12:49:50 2019
 """
 
 import numpy as np
-
+from keras.callbacks import ModelCheckpoint
 
 import random
 from keras.datasets import mnist
@@ -107,14 +107,21 @@ distance = Lambda(dist,
 
 model = Model([input_a, input_b], distance)
 
-
+# Loading  weights
+model.load_weights("weights_best_final.hdf5")
 #Training
 rms = RMSprop()
 model.compile(loss=contrastive_loss, optimizer=rms, metrics=[accuracy])
+
+#Checkpoint 
+filepath="weights_best_final.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+callbacks_list = [checkpoint]
+
 model.fit([tr_pairs[:, 0], tr_pairs[:, 1]], tr_y,
           batch_size=128,
           epochs=epochs,
-          validation_data=([te_pairs[:, 0], te_pairs[:, 1]], te_y))
+          validation_data=([te_pairs[:, 0], te_pairs[:, 1]], te_y),callbacks = [checkpoint])
 
 #Accuracy test
 y_pred = model.predict([tr_pairs[:, 0], tr_pairs[:, 1]])
